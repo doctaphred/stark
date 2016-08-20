@@ -135,5 +135,11 @@ class Stark:
         exec(code, globals())
         return None
 
+    def cmd_var(self, name):
+        return globals()[name]
 
+    def cmd_builtin(self, name):
+        return getattr(__builtins__, name)
 
+    def cmd_call(self, name, *args):
+        return self.cmd_builtin(name)(*args)
