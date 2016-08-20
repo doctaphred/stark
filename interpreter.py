@@ -50,49 +50,42 @@ class Stark:
         index, = args
         return self.hist[-int(index)].result
 
-    def cmd_hist(self, *args):
-        index, = args
+    def cmd_hist(self, index):
         return self.hist[-int(index)].statement
 
-    def cmd_set(self, *args):
-        name, *args = args
+    def cmd_set(self, name, *args):
         self.stack[name] = self.cmd_eval(args)
         return None
 
-    def cmd_int(self, *args):
-        i, = args
+    def cmd_int(self, i):
         return int(i)
 
-    def cmd_get(self, *args):
-        name, = args
+    def cmd_get(self, name):
         return self.stack[name]
 
     def cmd_getall(self, *args):
         return tuple(self.stack[a] for a in args)
 
-    def cmd_del(self, *args):
-        name, = args
+    def cmd_del(self, name):
         return self.stack.pop(name)
 
-    def cmd_delall(self, *args):
+    def cmd_delall(self, *names):
         # TODO: validate names first
-        return tuple(self.stack.pop(a) for a in args)
+        return tuple(self.stack.pop(name) for name in names)
 
-    def cmd_say(self, *args):
-        print(*args)
+    def cmd_say(self, *strings):
+        print(*strings)
         return None
 
-    def cmd_show(self, *args):
-        print(*[self.stack[a] for a in args])
+    def cmd_show(self, *names):
+        print(*[self.stack[name] for name in names])
         return None
 
-    def cmd_while(self, *args):
-        cond, code = args
+    def cmd_while(self, cond, code):
         while self.cmd_exec(cond):
             self.cmd_exec(code)
 
-    def cmd_reduce(self, *args):
-        func, *args = args
+    def cmd_reduce(self, func, *args):
         values = [self.stack[a] for a in args]
         return reduce(self.stack[func], values)
 
@@ -109,17 +102,16 @@ class Stark:
         # TODO: chain across arbitrarily many!! :D
         return self.stack[a] < self.stack[b]
 
-    def cmd_sum(self, *args):
-        return sum(self.stack[a] for a in args)
+    def cmd_sum(self, *names):
+        return sum(self.stack[name] for name in names)
 
-    def cmd_any(self, *args):
-        return any(self.stack[a] for a in args)
+    def cmd_any(self, *names):
+        return any(self.stack[name] for name in names)
 
-    def cmd_all(self, *args):
-        return all(self.stack[a] for a in args)
+    def cmd_all(self, *names):
+        return all(self.stack[name] for name in names)
 
-    def cmd_python(self, *args):
-        code, = args
+    def cmd_python(self, code):
         exec(code, globals())
         return None
 
