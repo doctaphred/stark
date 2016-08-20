@@ -33,11 +33,11 @@ class Stark:
 
     def cmd_exec(self, code):
         program = lex(code)
-        # TODO: handle empty program better (return sentinel value?
-        # don't update self.result?)
-        assert program
-        for statement in program:
-            result = self.cmd_eval(statement)
+        if not program:
+            return None
+        for cmd, *args in program:
+            result = self.stack[cmd](*args)
+        self.hist.append(Record(cmd, args, result))
         return result
 
     def cmd_push(self):
