@@ -26,11 +26,7 @@ class Stark:
 
     def cmd_eval(self, statement):
         cmd, *args = statement
-        try:
-            result = self.stack[cmd](*args)
-        except Exception as ex:
-            traceback.print_exc()
-            result = ex
+        result = self.stack[cmd](*args)
         self.hist.append(Record(cmd, args, result))
         return result
 
