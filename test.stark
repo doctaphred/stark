@@ -1,0 +1,7 @@
+set x int 1
+set step int 1
+set end int 10
+while {ne x end} {
+    show x
+    set x sum x step
+}

@@ -164,19 +164,15 @@ class Stark:
 
 if __name__ == '__main__':
     stark = Stark()
-    code = """
-        set x int 1
-        set step int 1
-        set end int 10
-        while {ne x end} {
-            show x
-            set x sum x step
-        }
-        """
-    stark.stark_exec(code)
 
     def ev(*args):
         stark.stark_eval(args)
 
     def ex(code):
         stark.stark_exec(code)
+
+    def exf(path):
+        with open(path) as f:
+            stark.stark_exec(f.read())
+
+    exf('test.stark')
