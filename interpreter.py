@@ -47,14 +47,18 @@ class Stark:
         self.cmd_record(cmd, args, result)
         return result
 
-    def cmd_exec(self, code):
+    def cmd_exec(self, code, trace=False, echo=False):
         program = self.cmd_lex(code)
         if not program:
             return None
         for statement in program:
+            if trace:
+                print('>', ' '.join(statement))
             cmd, args = self.cmd_parse(statement)
             result = self.cmd_eval(cmd, args)
         self.cmd_record(cmd, args, result)
+        if echo:
+            print('=>', result)
         return result
 
     def cmd_push(self):
