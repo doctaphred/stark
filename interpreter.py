@@ -52,11 +52,17 @@ class Stark:
     def cmd_pop(self):
         return self.stack.pop()
 
-    def cmd_result(self, index):
-        return self.hist[-int(index)].result
+    def cmd_hist(self, index=1):
+        return self.hist[-int(index)]
 
-    def cmd_hist(self, index):
-        return self.hist[-int(index)].statement
+    def cmd_result(self, index=1):
+        return self.cmd_hist(index).result
+
+    def cmd_cmd(self, index=1):
+        return self.cmd_hist(index).command
+
+    def cmd_args(self, index=1):
+        return self.cmd_hist(index).args
 
     def cmd_set(self, name, *args):
         self.stack[name] = self.cmd_eval(args)
