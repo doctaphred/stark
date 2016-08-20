@@ -21,15 +21,13 @@ def lex(code):
 
     def end_token():
         if token:
-            t = ''.join(token)
-            statement.append(t)
+            statement.append(''.join(token))
             token.clear()
 
     def end_statement():
         end_token()
         if statement:
-            s = tuple(statement)
-            program.append(s)
+            program.append(tuple(statement))
             statement.clear()
 
     for char in code:
