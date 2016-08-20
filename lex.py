@@ -83,8 +83,14 @@ def lex(code):
             else:
                 token.append(char)
 
-    if token or statement:
-        raise SyntaxError('No newline or semicolon at end of program')
+    if token:
+        t = ''.join(token)
+        statement.append(t)
+        token.clear()
+    if statement:
+        s = tuple(statement)
+        program.append(s)
+        statement.clear()
 
     return program
 
