@@ -72,8 +72,8 @@ def lex(code):
 
             elif char == UNQUOTE:
                 raise SyntaxError(
-                    'line {}, column{}: unexpected {}'
-                    .format(char))
+                    'line {}, column{}: unexpected {!r}'
+                    .format(line, col, char))
 
             elif char == SPACE:
                 end_token()
