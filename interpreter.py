@@ -53,7 +53,7 @@ class Stark:
             return None
         for statement in program:
             if trace:
-                print('>', ' '.join(statement))
+                print('>', repr(statement))
             cmd, args = self.cmd_parse(statement)
             result = self.cmd_eval(cmd, args)
         self.cmd_record(cmd, args, result)
