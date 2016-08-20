@@ -1,12 +1,12 @@
 say Hello, world!
 
-set # get ignore
+alias # ignore
 # ayy
 
 # Ideas not yet implemented
-set -> get ignore
-set => get ignore
-set + get ignore
+alias -> ignore
+alias => ignore
+alias + ignore
 
 set x int 1
 set step int 1

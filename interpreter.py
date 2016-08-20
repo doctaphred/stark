@@ -61,6 +61,9 @@ class Stark:
         self.stack[name] = self.cmd_eval(args)
         return None
 
+    def cmd_alias(self, newname, name):
+        self.stack[newname] = self.stack[name]
+
     def cmd_do(self, code):
         # TODO: allow args
         return lambda: self.cmd_exec(code)
