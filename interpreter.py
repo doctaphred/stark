@@ -8,7 +8,7 @@ from utils import struct
 
 
 # TODO: capture stdin, stdout, stderr
-Record = struct('statement', 'result')
+Record = struct('command', 'args', 'result')
 
 
 class Stark:
@@ -22,13 +22,13 @@ class Stark:
         })
 
     def cmd_eval(self, statement):
-        name, *args = statement
+        cmd, *args = statement
         try:
-            result = self.stack[name](*args)
+            result = self.stack[cmd](*args)
         except Exception as ex:
             traceback.print_exc()
             result = ex
-        self.hist.append(Record(statement, result))
+        self.hist.append(Record(cmd, args, result))
         return result
 
     def cmd_exec(self, code):
