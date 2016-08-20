@@ -21,6 +21,9 @@ class Stark:
             if name.startswith('cmd_')
         })
 
+    def cmd_comment(self, *args):
+        pass
+
     def cmd_eval(self, statement):
         cmd, *args = statement
         try:
