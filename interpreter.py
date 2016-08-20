@@ -64,11 +64,12 @@ class Stark:
         self.stack[name] = self.cmd_eval(args)
         return None
 
-    def cmd_do(self, *args):
-        return lambda *more_args: self.cmd_eval(args + more_args)
+    def cmd_do(self, code):
+        # TODO: allow args
+        return lambda: self.cmd_exec(code)
 
-    def cmd_def(self, name, *args):
-        self.stack[name] = self.cmd_do(*args)
+    def cmd_def(self, name, code):
+        self.stack[name] = self.cmd_do(code)
 
     def cmd_pass(self, *args):
         return args
