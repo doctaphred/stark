@@ -107,10 +107,9 @@ class Stark:
         return int(i)
 
     def cmd_get(self, name):
-        return self[name]
-
-    def __getitem__(self, name):
         return self.stack[name]
+
+    __getitem__ = cmd_get
 
     def cmd_getall(self, *args):
         return tuple(self[a] for a in args)
