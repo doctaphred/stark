@@ -34,8 +34,11 @@ class Stark:
         self.hist.append(Record(cmd, args, result))
         return result
 
+    def cmd_lex(self, code):
+        return lex(code)
+
     def cmd_exec(self, code):
-        program = lex(code)
+        program = self.cmd_lex(code)
         if not program:
             return None
         for cmd, *args in program:
