@@ -3,6 +3,9 @@ say Hello, world!
 set # get ignore
 # ayy
 
+# Doctest ideas (not yet implemented)
+set -> get ignore
+set => get ignore
 
 set x int 1
 set step int 1
@@ -19,3 +22,20 @@ def greet {
 }
 
 greet
+-> {
+    hey
+    howdy
+    hey
+}
+=> None
+
+# set code read text.stark
+# exec code
+
+# set newcode str {say ayy}
+# # newcode: str {say ayy}
+# write newcode.stark get newcode
+# # get newcode > write newcode.stark
+
+# # say nothing
+# # nothing > say
