@@ -14,11 +14,11 @@ def weak_cached(func):
     cache = weakref.WeakValueDictionary()
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args):
         try:
             return cache[args]
         except KeyError:
-            cache[args] = result = func(*args, **kwargs)
+            cache[args] = result = func(*args)
             return result
 
     wrapper._cache = cache
