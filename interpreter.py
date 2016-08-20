@@ -103,6 +103,20 @@ class Stark:
     def cmd_list(self, *args):
         return args
 
+    def cmd_first(self, *args):
+        first, *rest = args
+        return first
+
+    def cmd_last(self, *args):
+        *rest, last = args
+        return last
+
+    def cmd_str(self, arg):
+        return str(arg)
+
+    def cmd_repr(self, arg):
+        return repr(arg)
+
     def cmd_int(self, i):
         return int(i)
 
