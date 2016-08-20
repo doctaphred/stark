@@ -1,3 +1,5 @@
+set # do comment
+# ayy
 set x int 1
 set step int 1
 set end int 10
