@@ -1,5 +1,9 @@
+say Hello, world!
+
 set # get ignore
 # ayy
+
+
 set x int 1
 set step int 1
 set end int 10
@@ -7,3 +11,11 @@ while {ne x end} {
     show x
     set x sum x step
 }
+
+def greet {
+    say hey
+    say howdy
+    say hey
+}
+
+greet
