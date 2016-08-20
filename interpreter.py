@@ -107,10 +107,13 @@ class Stark:
         return int(i)
 
     def cmd_get(self, name):
+        return self[name]
+
+    def __getitem__(self, name):
         return self.stack[name]
 
     def cmd_getall(self, *args):
-        return tuple(self.stack[a] for a in args)
+        return tuple(self[a] for a in args)
 
     def cmd_del(self, name):
         return self.stack.pop(name)
@@ -124,7 +127,7 @@ class Stark:
         return None
 
     def cmd_show(self, *names):
-        print(*[self.stack[name] for name in names])
+        self.cmd_say(*self.cmd_getall(*names))
         return None
 
     def cmd_while(self, cond, code):
@@ -132,30 +135,29 @@ class Stark:
             self.cmd_exec(code)
 
     def cmd_reduce(self, func, *args):
-        values = [self.stack[a] for a in args]
-        return reduce(self.stack[func], values)
+        return reduce(self[func], self.cmd_getall(*args))
 
     def cmd_eq(self, *args):
         a, b = args
-        return self.stack[a] == self.stack[b]
+        return self[a] == self[b]
 
     def cmd_ne(self, *args):
         a, b = args
-        return self.stack[a] != self.stack[b]
+        return self[a] != self[b]
 
     def cmd_lt(self, *args):
         a, b = args
         # TODO: chain across arbitrarily many!! :D
-        return self.stack[a] < self.stack[b]
+        return self[a] < self[b]
 
     def cmd_sum(self, *names):
-        return sum(self.stack[name] for name in names)
+        return sum(self.cmd_getall(*names))
 
     def cmd_any(self, *names):
-        return any(self.stack[name] for name in names)
+        return any(self.cmd_getall(*names))
 
     def cmd_all(self, *names):
-        return all(self.stack[name] for name in names)
+        return all(self.cmd_getall(*names))
 
     def cmd_python(self, code):
         exec(code, globals())
