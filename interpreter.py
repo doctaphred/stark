@@ -129,7 +129,7 @@ class Stark:
         return tuple(self[a] for a in args)
 
     def cmd_del(self, name):
-        return self.stack.pop(name)
+        return self.stack.top.pop(name)
 
     def cmd_delall(self, *names):
         # TODO: validate names first
