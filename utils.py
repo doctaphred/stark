@@ -84,7 +84,11 @@ def struct(*attrs):
             return len(self.values)
 
         def __eq__(self, other):
-            return self.names == other.names and self.values == other.values
+            """Check both the attributes and their ordering."""
+            return all(
+                self_value == other_value == getattr(other, name)
+                for (name, self_value), other_value
+                in zip(self.items, other))
 
         def __hash__(self):
             return hash(self.values)
