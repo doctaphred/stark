@@ -1,4 +1,4 @@
-set # do comment
+set # get ignore
 # ayy
 set x int 1
 set step int 1

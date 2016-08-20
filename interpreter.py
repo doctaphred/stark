@@ -21,9 +21,6 @@ class Stark:
             if name.startswith('cmd_')
         })
 
-    def cmd_comment(self, *args):
-        pass
-
     def cmd_eval(self, statement):
         cmd, *args = statement
         result = self.stack[cmd](*args)
@@ -71,7 +68,13 @@ class Stark:
     def cmd_def(self, name, code):
         self.stack[name] = self.cmd_do(code)
 
-    def cmd_pass(self, *args):
+    def cmd_ignore(self, *args):
+        pass
+
+    def cmd_lit(self, arg):
+        return arg
+
+    def cmd_list(self, *args):
         return args
 
     def cmd_int(self, i):
