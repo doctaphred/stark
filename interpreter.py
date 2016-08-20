@@ -122,13 +122,13 @@ if __name__ == '__main__':
     stark = Stark()
 
     def ev(*args):
-        stark.cmd_eval(args)
+        return stark.cmd_eval(args)
 
     def ex(code):
-        stark.cmd_exec(code)
+        return stark.cmd_exec(code)
 
     def exf(path):
         with open(path) as f:
-            stark.cmd_exec(f.read())
+            return stark.cmd_exec(f.read())
 
     exf('test.stark')
