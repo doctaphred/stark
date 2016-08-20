@@ -1,3 +1,6 @@
+import pp
+
+
 class Stack:
     """Basically a ChainMap."""
 
@@ -27,6 +30,8 @@ class Stack:
                 return d[key]
             except KeyError:
                 pass
+        # TODO: add frames to the exception message
+        pp(self.frames)
         raise KeyError(key)
 
     def __setitem__(self, key, value):
