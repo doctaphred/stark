@@ -3,22 +3,27 @@ say Hello, world!
 alias # ignore
 # ayy
 
+# Inline tests!
+alias => expect
 
-set x ignore x
-show x
-set x lit x
-show x
-set x list x
-show x
-set x first a b c
-show x
-set x last a b c
-show x
+ignore x
+=> None
+
+lit x
+=> x
+
+list x
+=> ('x',)
+
+first a b c
+=> a
+
+last a b c
+=> c
 
 
 # Ideas not yet implemented
 alias -> ignore
-alias => ignore
 alias + ignore
 
 set x int 1

@@ -184,3 +184,10 @@ class Stark:
 
     def cmd_call(self, name, *args):
         return self.cmd_builtin(name)(*args)
+
+    def cmd_expect(self, expected):
+        actual = str(self.cmd_result())
+        # expected = repr(' '.join(parts))
+        if actual != expected:
+            raise RuntimeError('Expected {!r}, got {!r}'.format(
+                expected, actual))
