@@ -3,6 +3,19 @@ say Hello, world!
 alias # ignore
 # ayy
 
+
+set x ignore x
+show x
+set x lit x
+show x
+set x list x
+show x
+set x first a b c
+show x
+set x last a b c
+show x
+
+
 # Ideas not yet implemented
 alias -> ignore
 alias => ignore
