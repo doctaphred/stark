@@ -46,8 +46,7 @@ class Stark:
     def cmd_pop(self):
         return self.stack.pop()
 
-    def cmd_result(self, *args):
-        index, = args
+    def cmd_result(self, index):
         return self.hist[-int(index)].result
 
     def cmd_hist(self, index):
