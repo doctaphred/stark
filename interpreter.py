@@ -1,5 +1,5 @@
 import traceback
-from collections import ChainMap, deque
+from collections import deque
 from functools import reduce
 
 from lex import lex
@@ -9,14 +9,51 @@ from utils import struct
 Record = struct('statement', 'result')
 
 
+class Stack:
+    """Basically a ChainMap."""
+
+    def __init__(self, initial=None):
+        if initial is None:
+            initial = {}
+        self.frames = [initial]
+
+    @property
+    def top(self):
+        return self.frames[-1]
+
+    def push(self, new=None):
+        """Add a new namespace to the top of the stack."""
+        if new is None:
+            new = {}
+        self.frames.append(new)
+
+    def pop(self):
+        """Remove the top namespace from the stack."""
+        return self.frames.pop()
+
+    def __getitem__(self, key):
+        """Return the first match, from the top of the stack down."""
+        for d in reversed(self.frames):
+            try:
+                return d[key]
+            except KeyError:
+                pass
+        raise KeyError(key)
+
+    def __setitem__(self, key, value):
+        """Set the key in the topmost namespace."""
+        self.top[key] = value
+
+    def __delitem__(self, key):
+        """Delete the key from the topmost namespace."""
+        del self.top[key]
+
+
 class Stark:
 
     def __init__(self, hist_length=1000):
-        self.state = ChainMap()
-        self.stack = self.state.maps
         self.hist = deque(maxlen=hist_length)
-
-        self.stack.append({
+        self.stack = Stack({
             name[6:]: getattr(self, name)
             for name in dir(self)
             if name.startswith('stark_')
@@ -25,7 +62,7 @@ class Stark:
     def stark_eval(self, statement):
         name, *args = statement
         try:
-            res = self.state[name](*args)
+            res = self.stack[name](*args)
         except Exception as ex:
             traceback.print_exc()
             res = ex
@@ -42,10 +79,10 @@ class Stark:
         return res
 
     def stark_push(self):
-        self.stack.append({})
+        self.stack.push()
 
     def stark_pop(self):
-        self.stack.pop()
+        return self.stack.pop()
 
     def stark_res(self, *args):
         index, = args
@@ -57,7 +94,7 @@ class Stark:
 
     def stark_set(self, *args):
         name, *args = args
-        self.state[name] = self.stark_eval(args)
+        self.stack[name] = self.stark_eval(args)
         return None
 
     def stark_int(self, *args):
@@ -66,25 +103,25 @@ class Stark:
 
     def stark_get(self, *args):
         name, = args
-        return self.state[name]
+        return self.stack[name]
 
     def stark_getall(self, *args):
-        return tuple(self.state[a] for a in args)
+        return tuple(self.stack[a] for a in args)
 
     def stark_del(self, *args):
         name, = args
-        return self.state.pop(name)
+        return self.stack.pop(name)
 
     def stark_delall(self, *args):
         # TODO: validate names first
-        return tuple(self.state.pop(a) for a in args)
+        return tuple(self.stack.pop(a) for a in args)
 
     def stark_say(self, *args):
         print(*args)
         return None
 
     def stark_show(self, *args):
-        print(*[self.state[a] for a in args])
+        print(*[self.stack[a] for a in args])
         return None
 
     def stark_while(self, *args):
@@ -94,30 +131,30 @@ class Stark:
 
     def stark_reduce(self, *args):
         func, *args = args
-        values = [self.state[a] for a in args]
-        return reduce(self.state[func], values)
+        values = [self.stack[a] for a in args]
+        return reduce(self.stack[func], values)
 
     def stark_eq(self, *args):
         a, b = args
-        return self.state[a] == self.state[b]
+        return self.stack[a] == self.stack[b]
 
     def stark_ne(self, *args):
         a, b = args
-        return self.state[a] != self.state[b]
+        return self.stack[a] != self.stack[b]
 
     def stark_lt(self, *args):
         a, b = args
         # TODO: chain across arbitrarily many!! :D
-        return self.state[a] < self.state[b]
+        return self.stack[a] < self.stack[b]
 
     def stark_sum(self, *args):
-        return sum(self.state[a] for a in args)
+        return sum(self.stack[a] for a in args)
 
     def stark_any(self, *args):
-        return any(self.state[a] for a in args)
+        return any(self.stack[a] for a in args)
 
     def stark_all(self, *args):
-        return all(self.state[a] for a in args)
+        return all(self.stack[a] for a in args)
 
     def stark_python(self, *args):
         code, = args
