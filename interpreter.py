@@ -3,6 +3,7 @@ from collections import deque
 from functools import reduce
 
 from lex import lex
+from parse import parse
 from stack import Stack
 from utils import struct
 
@@ -21,22 +22,39 @@ class Stark:
             if name.startswith('cmd_')
         })
 
-    def cmd_eval(self, statement):
-        cmd, *args = statement
-        result = self.stack[cmd](*args)
-        self.hist.append(Record(cmd, args, result))
-        return result
+    def cmd_record(self, *args, **kwargs):
+        self.hist.append(Record(*args, **kwargs))
 
     def cmd_lex(self, code):
         return lex(code)
+
+    def cmd_parse(self, statement):
+        try:
+            return parse(statement)
+        except Exception:
+            print('Error parsing statement:')
+            pp(statement)
+            raise
+
+    def cmd_eval(self, cmd, args):
+        try:
+            result = self.stack[cmd](*args)
+        except Exception as ex:
+            print('{}: {}'.format(ex.__class__.__name__, ex))
+            print('  command:', repr(cmd))
+            print('  args:', repr(args))
+            raise
+        self.cmd_record(cmd, args, result)
+        return result
 
     def cmd_exec(self, code):
         program = self.cmd_lex(code)
         if not program:
             return None
-        for cmd, *args in program:
-            result = self.stack[cmd](*args)
-        self.hist.append(Record(cmd, args, result))
+        for statement in program:
+            cmd, args = self.cmd_parse(statement)
+            result = self.cmd_eval(cmd, args)
+        self.cmd_record(cmd, args, result)
         return result
 
     def cmd_push(self):
@@ -57,8 +75,9 @@ class Stark:
     def cmd_args(self, index=1):
         return self.cmd_hist(index).args
 
-    def cmd_set(self, name, *args):
-        self.stack[name] = self.cmd_eval(args)
+    def cmd_set(self, name, *statement):
+        cmd, args = self.cmd_parse(statement)
+        self.stack[name] = self.cmd_eval(cmd, args)
         return None
 
     def cmd_alias(self, newname, name):
