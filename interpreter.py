@@ -5,7 +5,6 @@ from functools import reduce
 import pp
 
 from lex import lex
-from parse import parse
 from stack import Stack
 from utils import struct
 
@@ -32,7 +31,14 @@ class Stark:
 
     def cmd_parse(self, statement):
         try:
-            return parse(statement)
+            values = []
+            for token in statement:
+                if token.startswith(':'):
+                    values.append(self[token[1:]])
+                else:
+                    values.append(token)
+            cmd, *args = values
+            return cmd, args
         except Exception:
             print('Error parsing statement:')
             pp(statement)
