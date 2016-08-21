@@ -1,7 +1,4 @@
-PIPE = '>'
-
-
-def pipe(statement):
+def pipe(statement, on):
     """
 
     (forward, backward) for 'abc>def':
@@ -14,11 +11,11 @@ def pipe(statement):
     f: def, cba
     => defabc, <empty>
 
-    >>> pipe(['list', 'a', 'b', 'c', '>', 'set', 'x'])
+    >>> pipe(['list', 'a', 'b', 'c', '>', 'set', 'x'], on='>')
     ['set', 'x', 'list', 'a', 'b', 'c']
 
     >>> def ppipe(s):
-    ...     print(''.join(pipe(s)))
+    ...     print(''.join(pipe(s, '>')))
 
     >>> ppipe('abc')
     abc
@@ -56,7 +53,7 @@ def pipe(statement):
             forward.append(backward.pop())
 
     for token in statement:
-        if token == PIPE:
+        if token == on:
             flip()
         else:
             forward.append(token)
