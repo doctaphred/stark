@@ -1,7 +1,7 @@
 def pipe(statement, on):
     """
 
-    (forward, backward) for 'abc>def':
+    (start, end) for 'abc>def':
     a: a, <empty>
     b: ab, <empty>
     c: abc, <empty>
@@ -41,22 +41,22 @@ def pipe(statement, on):
     >>> ppipe('>a>b>c>d>e>f>')
     fedcba
     """
-    forward = []
-    backward = []
+    start = []
+    end = []
 
-    def flip():
-        while forward:
-            backward.append(forward.pop())
+    def push():
+        while start:
+            end.append(start.pop())
 
-    def unflip():
-        while backward:
-            forward.append(backward.pop())
+    def pull():
+        while end:
+            start.append(end.pop())
 
     for token in statement:
         if token == on:
-            flip()
+            push()
         else:
-            forward.append(token)
+            start.append(token)
 
-    unflip()
-    return forward
+    pull()
+    return start
