@@ -1,0 +1,33 @@
+alias # ignore
+alias -> ignore
+alias => expect
+
+say hello
+-> hello
+
+hello | say
+-> hello
+
+hello | say | say
+-> say hello
+
+set a int 1
+set b int 2
+set c int 3
+
+sum a b c
+=> 6
+
+int 1 | set a
+2 | int | set b
+3 | int | c | set
+
+a b c | sum
+=> 6
+
+set x list a b c
+list a b c | set x
+a b c | list | set x
+a b c | list | x | set
+get x
+=> {('a', 'b', 'c')}

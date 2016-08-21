@@ -13,4 +13,6 @@ def exf(path, trace=True, echo=True):
         return stark.cmd_exec(f.read(), trace, echo)
 
 
-exf('test.stark')
+if __name__ == '__main__':
+    import sys
+    exf(sys.argv[1])
