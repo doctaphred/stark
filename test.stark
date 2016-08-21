@@ -1,5 +1,31 @@
-set # do comment
+say Hello, world!
+
+alias # ignore
 # ayy
+
+# Inline tests!
+alias => expect
+
+ignore x
+=> None
+
+lit x
+=> x
+
+list x
+=> ('x',)
+
+first a b c
+=> a
+
+last a b c
+=> c
+
+
+# Ideas not yet implemented
+alias -> ignore
+alias + ignore
+
 set x int 1
 set step int 1
 set end int 10
@@ -7,3 +33,32 @@ while {ne x end} {
     show x
     set x sum x step
 }
+
+def greet {
+    say hey
+    say howdy
+    say hey
+}
++ doc {Say hello}
++ test {
+    greet
+    -> {
+        hey
+        howdy
+        hey
+    }
+    => None
+}
+
+greet
+
+# set code read text.stark
+# exec code
+
+# set newcode str {say ayy}
+# # newcode: str {say ayy}
+# write newcode.stark get newcode
+# # get newcode > write newcode.stark
+
+# # say nothing
+# # nothing > say

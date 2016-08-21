@@ -19,6 +19,17 @@ def lex(code):
     line = 1
     col = 0
 
+    def end_token():
+        if token:
+            statement.append(''.join(token))
+            token.clear()
+
+    def end_statement():
+        end_token()
+        if statement:
+            program.append(tuple(statement))
+            statement.clear()
+
     for char in code:
 
         if char == NEWLINE:
@@ -61,36 +72,19 @@ def lex(code):
 
             elif char == UNQUOTE:
                 raise SyntaxError(
-                    'line {}, column{}: unexpected {}'
-                    .format(char))
+                    'line {}, column{}: unexpected {!r}'
+                    .format(line, col, char))
 
             elif char == SPACE:
-                if token:
-                    t = ''.join(token)
-                    statement.append(t)
-                    token.clear()
+                end_token()
 
             elif char == SEMICOLON or char == NEWLINE:
-                if token:
-                    t = ''.join(token)
-                    statement.append(t)
-                    token.clear()
-                if statement:
-                    s = tuple(statement)
-                    program.append(s)
-                    statement.clear()
+                end_statement()
 
             else:
                 token.append(char)
 
-    if token:
-        t = ''.join(token)
-        statement.append(t)
-        token.clear()
-    if statement:
-        s = tuple(statement)
-        program.append(s)
-        statement.clear()
+    end_statement()
 
     return program
 

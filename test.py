@@ -4,17 +4,13 @@ from interpreter import Stark
 stark = Stark()
 
 
-def ev(*args):
-    return stark.cmd_eval(args)
+def x(code, trace=True, echo=True):
+    return stark.cmd_exec(code, trace, echo)
 
 
-def ex(code):
-    return stark.cmd_exec(code)
-
-
-def exf(path):
+def exf(path, trace=True, echo=True):
     with open(path) as f:
-        return stark.cmd_exec(f.read())
+        return stark.cmd_exec(f.read(), trace, echo)
 
 
 exf('test.stark')
