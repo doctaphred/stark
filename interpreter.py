@@ -19,7 +19,7 @@ class Stark:
     def __init__(self, hist_length=1000):
         self.hist = deque(maxlen=hist_length)
         self.stack = Stack({
-            name[4:]: getattr(self, name)
+            name[4:].replace('_', '-'): getattr(self, name)
             for name in dir(self)
             if name.startswith('cmd_')
         })
