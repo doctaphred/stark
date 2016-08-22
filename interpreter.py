@@ -158,6 +158,14 @@ class Stark:
     def cmd_reduce(self, func, *args):
         return reduce(self[func], self.cmd_getall(*args))
 
+
+    def cmd_is(self, *args):
+        # TODO: decide whether commands like these should auto-lookup
+        # names or accept values directly. Or add an "in-place eval"
+        # syntax.
+        a, b = args
+        return self[a] is self[b]
+
     def cmd_eq(self, *args):
         a, b = args
         return self[a] == self[b]
