@@ -9,16 +9,31 @@ ignore x
 => None
 
 lit x
-=> x
+=> 'x'
+set x lit x
+show x x
 
 list x
 => ('x',)
 
 first a b c
-=> a
+=> 'a'
 
 last a b c
-=> c
+=> 'c'
+
+pyeval 'ayy'
+=> 'ayy'
+pyeval {{'a': 2, 'b': 2}}
+=> {{'a': 2, 'b': 2}}
+
+pyexec {ayy = 'lmao'}
+pyeval ayy
+=> 'lmao'
+
+pyset lol wut
+pyget lol
+=> 'wut'
 
 
 # Ideas not yet implemented
@@ -50,6 +65,36 @@ def greet {
 }
 
 greet
+
+
+alias -> ignore
+
+set name lit world!
+# name: lit world!
+say Hello, :name
+-> Hello, world!
+
+set {a y y} lit {l m a o}
+say :{a y y}
+-> l m a o
+
+# x: int 1
+# set :x int 1
+
+set print get say
+print hello
+-> hello
+
+set print lit say
+:print hello
+-> hello
+
+# print: :say
+# print hello
+# -> hello
+
+# blah
+#
 
 # set code read text.stark
 # exec code
