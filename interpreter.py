@@ -69,8 +69,8 @@ class Stark:
             print('=>', result)
         return result
 
-    def cmd_push(self):
-        self.stack.push()
+    def cmd_push(self, frame=None):
+        self.stack.push(frame)
 
     def cmd_pop(self):
         return self.stack.pop()
