@@ -12,6 +12,12 @@ name: lit world!
 say Hello, :name
 -> Hello, world!
 
+name: lit world
+greeting: format {Hello, {name}!}
+=> {'Hello, world!'}
+say :greeting
+-> Hello, world!
+
 ignore x
 => None
 

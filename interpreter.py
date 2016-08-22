@@ -272,3 +272,6 @@ class Stark:
         self.cmd_push()
         self.cmd_exec(code)
         return self.cmd_pop()
+
+    def cmd_format(self, string):
+        return string.format_map(self.stack)
