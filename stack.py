@@ -1,7 +1,5 @@
 from collections import OrderedDict
 
-import pp
-
 
 class Frame:
     """An ordered dict of stacks.
@@ -112,8 +110,6 @@ class Stack:
                 return d[key]
             except KeyError:
                 pass
-        # TODO: add frames to the exception message
-        pp(self.frames)
         raise KeyError(key)
 
     def __setitem__(self, key, value):
