@@ -4,14 +4,22 @@ say Hello, world!
 
 # Inline tests!
 alias => expect
+# Ideas not yet implemented
+alias -> ignore
+alias + ignore
+
+name: lit world!
+say Hello, :name
+-> Hello, world!
 
 ignore x
 => None
 
 lit x
 => 'x'
-set x lit x
-show x x
+x: lit x
+get x
+=> 'x'
 
 list x
 => ('x',)
@@ -36,17 +44,15 @@ pyget lol
 => 'wut'
 
 
-# Ideas not yet implemented
-alias -> ignore
-alias + ignore
-
-set x int 1
-set step int 1
-set end int 10
+x: int 1
+step: int 1
+end: int 10
 while {ne x end} {
-    show x
-    set x sum x step
+    say x is :x
+    x: sum x step
 }
+=> 10
+-> x is 9
 
 def greet {
     say hey
@@ -66,32 +72,21 @@ def greet {
 
 greet
 
-
-alias -> ignore
-
-set name lit world!
-# name: lit world!
-say Hello, :name
--> Hello, world!
-
-set {a y y} lit {l m a o}
+{a y y}: lit {l m a o}
 say :{a y y}
 -> l m a o
 
-# x: int 1
-# set :x int 1
-
-set print get say
+print: get say
 print hello
 -> hello
 
-set print lit say
+print: lit say
 :print hello
 -> hello
 
-# print: :say
-# print hello
-# -> hello
+alias print say
+print hello
+-> hello
 
 # blah
 #
