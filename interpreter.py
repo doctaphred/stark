@@ -152,8 +152,10 @@ class Stark:
         return None
 
     def cmd_while(self, cond, code):
+        result = None  # TODO: handle "code never exec'd" better
         while self.cmd_exec(cond):
-            self.cmd_exec(code)
+            result = self.cmd_exec(code)
+        return result
 
     def cmd_reduce(self, func, *args):
         return reduce(self[func], self.cmd_getall(*args))
