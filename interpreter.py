@@ -134,7 +134,17 @@ class Stark:
         pass
 
     def cmd_lit(self, arg):
+        # TODO: replace with val
         return arg
+
+    def cmd_defer(self, value):
+        return lambda: value
+
+    def cmd_val(self, value):
+        return value
+
+    def cmd_call(self, func, *args):
+        return func(*args)
 
     def cmd_list(self, *args):
         return args
