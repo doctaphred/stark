@@ -8,11 +8,11 @@ alias => expect
 alias -> ignore
 alias + ignore
 
-name: lit world!
+set name world!
 say Hello, :name
 -> Hello, world!
 
-name: lit world
+set name world
 greeting: format {Hello, {name}!}
 => {'Hello, world!'}
 say :greeting

@@ -120,18 +120,6 @@ class Stark:
     def cmd_args(self, index=1):
         return self.cmd_hist(index).args
 
-    # def cmd_set(self, name, *statement):
-    #     cmd, args = self.cmd_parse(statement)
-    #     self.stack[name] = self.cmd_eval(cmd, args)
-    #     return None
-
-    # def cmd_set(self, name, cmd_name, *args):
-    #     prev = self.stack.get(name, None)
-    #     # TODO: this seems strange
-    #     cmd = self[cmd_name]
-    #     self.stack[name] = cmd(*args)
-    #     return prev
-
     def cmd_alias(self, newname, name):
         self.stack[newname] = self.stack[name]
 
@@ -175,6 +163,9 @@ class Stark:
 
     def cmd_getall(self, *args):
         return tuple(self[a] for a in args)
+
+    def cmd_set(self, name, value):
+        self.stack[name] = value
 
     def cmd_del(self, name):
         return self.stack.top.pop(name)
