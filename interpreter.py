@@ -10,7 +10,7 @@ from utils import struct
 
 
 # TODO: capture stdin, stdout, stderr
-Record = struct('command', 'args', 'result')
+Record = struct('cmd', 'args', 'result')
 
 
 class Stark:
@@ -82,7 +82,7 @@ class Stark:
         return self.cmd_hist(index).result
 
     def cmd_cmd(self, index=1):
-        return self.cmd_hist(index).command
+        return self.cmd_hist(index).cmd
 
     def cmd_args(self, index=1):
         return self.cmd_hist(index).args
