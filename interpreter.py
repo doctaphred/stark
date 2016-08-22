@@ -75,6 +75,19 @@ class Stark:
     def cmd_pop(self):
         return self.stack.pop()
 
+    def cmd_stark_get(self, name):
+        return getattr(self, name)
+
+    def cmd_stark_set(self, name, value):
+        prev = getattr(self, name, None)
+        setattr(self, name, value)
+        return prev
+
+    def cmd_stark_del(self, name):
+        prev = getattr(self, name, None)
+        delattr(self, name)
+        return prev
+
     def cmd_hist(self, index=1):
         return self.hist[-int(index)]
 
