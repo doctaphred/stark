@@ -1,9 +1,9 @@
 alias => expect
 
-set x int 1
-=> None
-get x
-=> 1
+# set x int 1
+# => None
+# get x
+# => 1
 x: int 2
 => 2
 get x
