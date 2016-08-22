@@ -180,11 +180,16 @@ class Stark:
     def cmd_all(self, *names):
         return all(self.cmd_getall(*names))
 
-    def cmd_python(self, code):
+    def cmd_pyexec(self, code):
         exec(code, globals())
-        return None
 
-    def cmd_var(self, name):
+    def cmd_pyeval(self, statement):
+        return eval(statement)
+
+    def cmd_pyset(self, name, value):
+        globals()[name] = value
+
+    def cmd_pyget(self, name):
         return globals()[name]
 
     def cmd_builtin(self, name):
