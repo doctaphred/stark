@@ -204,3 +204,10 @@ class Stark:
         if actual != expected:
             raise RuntimeError('Expected {!r}, got {!r}'.format(
                 expected, actual))
+
+    def cmd_with(self, setup, code):
+        self.cmd_push()
+        self.cmd_exec(setup)
+        result = self.cmd_exec(code)
+        self.cmd_pop()
+        return result
