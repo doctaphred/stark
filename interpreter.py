@@ -29,19 +29,36 @@ class Stark:
     def cmd_lex(self, code):
         return lex(code)
 
+    def cmd_apply_lookups(self, statement):
+        """Translate the list of strings into a list of values."""
+        values = []
+        for token in statement:
+            if token.startswith(':'):
+                values.append(self[token[1:]])
+            else:
+                values.append(token)
+        return values
+
     def cmd_parse(self, statement):
         try:
-            values = []
-            for token in statement:
-                if token.startswith(':'):
-                    values.append(self[token[1:]])
-                else:
-                    values.append(token)
-            cmd, *args = values
-            return cmd, args
-        except Exception:
+            values = self.cmd_apply_lookups(statement)
+
+            first = values.pop(0)
+            if first.endswith(':'):
+                # Assignment operator
+                target = first[:-1]
+                cmd = values.pop(0)
+            else:
+                target = None
+                cmd = first
+
+            return target, cmd, values
+        except Exception as ex:
             print('Error parsing statement:')
-            pp(statement)
+            print('{}: {}'.format(ex.__class__.__name__, ex))
+            print('  statement:', statement)
+            print('  stack:')
+            pp(self.stack.frames)
             raise
 
     def cmd_eval(self, cmd, args):
@@ -62,9 +79,12 @@ class Stark:
         for statement in program:
             if trace:
                 print('>', repr(statement))
-            cmd, args = self.cmd_parse(statement)
+            if not statement:
+                continue
+            target, cmd, args = self.cmd_parse(statement)
             result = self.cmd_eval(cmd, args)
-        self.cmd_record(cmd, args, result)
+            if target is not None:
+                self.stack[target] = result
         if echo:
             print('=>', result)
         return result
