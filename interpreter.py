@@ -211,3 +211,14 @@ class Stark:
         result = self.cmd_exec(code)
         self.cmd_pop()
         return result
+
+    def cmd_using(self, frame, code):
+        self.cmd_push(frame)
+        result = self.cmd_exec(code)
+        self.cmd_pop()
+        return result
+
+    def cmd_frame(self, code):
+        self.cmd_push()
+        self.cmd_exec(code)
+        return self.cmd_pop()
