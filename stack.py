@@ -23,6 +23,12 @@ class Stack:
         """Remove the top namespace from the stack."""
         return self.frames.pop()
 
+    def get(self, key, default):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
     def __getitem__(self, key):
         """Return the first match, from the top of the stack down."""
         for d in reversed(self.frames):
