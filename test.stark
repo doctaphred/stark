@@ -1,38 +1,64 @@
 say Hello, world!
 
-alias # ignore
 # ayy
 
 # Inline tests!
 alias => expect
+# Ideas not yet implemented
+alias -> ignore
+alias + ignore
+
+set name world!
+say Hello, :name
+-> Hello, world!
+
+set name world
+greeting: format {Hello, {name}!}
+=> {'Hello, world!'}
+say :greeting
+-> Hello, world!
 
 ignore x
 => None
 
 lit x
-=> x
+=> 'x'
+x: lit x
+get x
+=> 'x'
 
 list x
 => ('x',)
 
 first a b c
-=> a
+=> 'a'
 
 last a b c
-=> c
+=> 'c'
+
+pyeval 'ayy'
+=> 'ayy'
+pyeval {{'a': 2, 'b': 2}}
+=> {{'a': 2, 'b': 2}}
+
+pyexec {ayy = 'lmao'}
+pyeval ayy
+=> 'lmao'
+
+pyset lol wut
+pyget lol
+=> 'wut'
 
 
-# Ideas not yet implemented
-alias -> ignore
-alias + ignore
-
-set x int 1
-set step int 1
-set end int 10
+x: int 1
+step: int 1
+end: int 10
 while {ne x end} {
-    show x
-    set x sum x step
+    say x is :x
+    x: sum x step
 }
+=> 10
+-> x is 9
 
 def greet {
     say hey
@@ -51,6 +77,25 @@ def greet {
 }
 
 greet
+
+{a y y}: lit {l m a o}
+say :{a y y}
+-> l m a o
+
+print: get say
+print hello
+-> hello
+
+print: lit say
+:print hello
+-> hello
+
+alias print say
+print hello
+-> hello
+
+# blah
+#
 
 # set code read text.stark
 # exec code

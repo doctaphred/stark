@@ -1,0 +1,25 @@
+# (Not yet completely implemented)
+
+{
+    x: int 1
+    x: int 2
+    x: int 3
+
+    get x
+    => 3
+    getall x
+    => [1, 2, 3]
+
+    set x int 4
+    get x
+    => 4
+    getall x
+    => [1, 2, 3, 4]
+
+    replace x int 5
+    => 4
+    get x
+    => 5
+    getall x
+    => [1, 2, 3, 5]
+}

@@ -1,4 +1,5 @@
 """Brace yourselves..."""
+from pipe import pipe
 
 ESCAPE = '\\'
 QUOTE = '{'
@@ -7,6 +8,12 @@ SPACE = ' '
 NEWLINE = '\n'
 SEMICOLON = ';'
 NOPE = '\t'
+
+PIPE_CHAR = '|'
+PIPE_TOKEN = object()
+
+COMMENT_CHAR = '#'
+COMMENT_TOKEN = object()
 
 
 def lex(code):
@@ -26,7 +33,18 @@ def lex(code):
 
     def end_statement():
         end_token()
+
+        # Remove comments
+        try:
+            comment_index = statement.index(COMMENT_TOKEN)
+        except ValueError:
+            pass
+        else:
+            del statement[comment_index:]
+
         if statement:
+            # TODO: make `lex` into a class to avoid hacks like [:]
+            statement[:] = pipe(statement, on=PIPE_TOKEN)
             program.append(tuple(statement))
             statement.clear()
 
@@ -80,6 +98,15 @@ def lex(code):
 
             elif char == SEMICOLON or char == NEWLINE:
                 end_statement()
+
+            elif char == COMMENT_CHAR:
+                end_token()
+                statement.append(COMMENT_TOKEN)
+
+            # TODO: don't limit to single char
+            elif char == PIPE_CHAR:
+                end_token()
+                statement.append(PIPE_TOKEN)
 
             else:
                 token.append(char)

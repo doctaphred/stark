@@ -5,13 +5,12 @@ from functools import reduce
 import pp
 
 from lex import lex
-from parse import parse
 from stack import Stack
 from utils import struct
 
 
 # TODO: capture stdin, stdout, stderr
-Record = struct('command', 'args', 'result')
+Record = struct('cmd', 'args', 'result')
 
 
 class Stark:
@@ -30,12 +29,36 @@ class Stark:
     def cmd_lex(self, code):
         return lex(code)
 
+    def cmd_apply_lookups(self, statement):
+        """Translate the list of strings into a list of values."""
+        values = []
+        for token in statement:
+            if token.startswith(':'):
+                values.append(self[token[1:]])
+            else:
+                values.append(token)
+        return values
+
     def cmd_parse(self, statement):
         try:
-            return parse(statement)
-        except Exception:
+            values = self.cmd_apply_lookups(statement)
+
+            first = values.pop(0)
+            if first.endswith(':'):
+                # Assignment operator
+                target = first[:-1]
+                cmd = values.pop(0)
+            else:
+                target = None
+                cmd = first
+
+            return target, cmd, values
+        except Exception as ex:
             print('Error parsing statement:')
-            pp(statement)
+            print('{}: {}'.format(ex.__class__.__name__, ex))
+            print('  statement:', statement)
+            print('  stack:')
+            pp(self.stack.frames)
             raise
 
     def cmd_eval(self, cmd, args):
@@ -56,18 +79,34 @@ class Stark:
         for statement in program:
             if trace:
                 print('>', repr(statement))
-            cmd, args = self.cmd_parse(statement)
+            if not statement:
+                continue
+            target, cmd, args = self.cmd_parse(statement)
             result = self.cmd_eval(cmd, args)
-        self.cmd_record(cmd, args, result)
+            if target is not None:
+                self.stack[target] = result
         if echo:
             print('=>', result)
         return result
 
-    def cmd_push(self):
-        self.stack.push()
+    def cmd_push(self, frame=None):
+        self.stack.push(frame)
 
     def cmd_pop(self):
         return self.stack.pop()
+
+    def cmd_stark_get(self, name):
+        return getattr(self, name)
+
+    def cmd_stark_set(self, name, value):
+        prev = getattr(self, name, None)
+        setattr(self, name, value)
+        return prev
+
+    def cmd_stark_del(self, name):
+        prev = getattr(self, name, None)
+        delattr(self, name)
+        return prev
 
     def cmd_hist(self, index=1):
         return self.hist[-int(index)]
@@ -76,15 +115,10 @@ class Stark:
         return self.cmd_hist(index).result
 
     def cmd_cmd(self, index=1):
-        return self.cmd_hist(index).command
+        return self.cmd_hist(index).cmd
 
     def cmd_args(self, index=1):
         return self.cmd_hist(index).args
-
-    def cmd_set(self, name, *statement):
-        cmd, args = self.cmd_parse(statement)
-        self.stack[name] = self.cmd_eval(cmd, args)
-        return None
 
     def cmd_alias(self, newname, name):
         self.stack[newname] = self.stack[name]
@@ -130,6 +164,9 @@ class Stark:
     def cmd_getall(self, *args):
         return tuple(self[a] for a in args)
 
+    def cmd_set(self, name, value):
+        self.stack[name] = value
+
     def cmd_del(self, name):
         return self.stack.top.pop(name)
 
@@ -146,11 +183,21 @@ class Stark:
         return None
 
     def cmd_while(self, cond, code):
+        result = None  # TODO: handle "code never exec'd" better
         while self.cmd_exec(cond):
-            self.cmd_exec(code)
+            result = self.cmd_exec(code)
+        return result
 
     def cmd_reduce(self, func, *args):
         return reduce(self[func], self.cmd_getall(*args))
+
+
+    def cmd_is(self, *args):
+        # TODO: decide whether commands like these should auto-lookup
+        # names or accept values directly. Or add an "in-place eval"
+        # syntax.
+        a, b = args
+        return self[a] is self[b]
 
     def cmd_eq(self, *args):
         a, b = args
@@ -174,11 +221,16 @@ class Stark:
     def cmd_all(self, *names):
         return all(self.cmd_getall(*names))
 
-    def cmd_python(self, code):
+    def cmd_pyexec(self, code):
         exec(code, globals())
-        return None
 
-    def cmd_var(self, name):
+    def cmd_pyeval(self, statement):
+        return eval(statement)
+
+    def cmd_pyset(self, name, value):
+        globals()[name] = value
+
+    def cmd_pyget(self, name):
         return globals()[name]
 
     def cmd_builtin(self, name):
@@ -188,8 +240,29 @@ class Stark:
         return self.cmd_builtin(name)(*args)
 
     def cmd_expect(self, expected):
-        actual = str(self.cmd_result())
+        actual = pp.fmt(self.cmd_result())
         # expected = repr(' '.join(parts))
         if actual != expected:
             raise RuntimeError('Expected {!r}, got {!r}'.format(
                 expected, actual))
+
+    def cmd_with(self, setup, code):
+        self.cmd_push()
+        self.cmd_exec(setup)
+        result = self.cmd_exec(code)
+        self.cmd_pop()
+        return result
+
+    def cmd_using(self, frame, code):
+        self.cmd_push(frame)
+        result = self.cmd_exec(code)
+        self.cmd_pop()
+        return result
+
+    def cmd_frame(self, code):
+        self.cmd_push()
+        self.cmd_exec(code)
+        return self.cmd_pop()
+
+    def cmd_format(self, string):
+        return string.format_map(self.stack)
