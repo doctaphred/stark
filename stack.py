@@ -1,4 +1,7 @@
 from collections import OrderedDict
+from itertools import chain
+
+from utils import unique
 
 
 class Frame:
@@ -141,3 +144,26 @@ class Stack:
     def __delitem__(self, key):
         """Delete the key from the topmost namespace."""
         del self.top[key]
+
+    def update(self, other):
+        for k, v in other.items():
+            self[k] = v
+        # TODO: don't require .items?
+        # for k in other:
+        #     self[k] = other[k]
+
+    def setdefault(self, key, default):
+        if key not in self:
+            self[key] = default
+
+    def hoist(self, key):
+        """Copy the key's value into the topmost frame."""
+        self[key] = self[key]
+
+    def keys(self):
+        return set(self)
+
+    def __iter__(self):
+        yield from unique(chain.from_iterable(reversed(self.frames)))
+
+    # TODO: __missing__?
