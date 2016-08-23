@@ -38,21 +38,33 @@ class Frame:
 
     # TODO: use this instead of dicts in the Stack class below
 
+    # TODO: implement __delitem__ by pushing a 'DELETED' sentry?
+
     def __init__(self, initial):
         self._all = OrderedDict()
         for k, v in initial:
             self[k] = v
 
-    def __getitem__(self, key, value):
+    def __getitem__(self, key):
+        """Return the present value of the key."""
         return self._all[key][-1]
 
     def getall(self, key):
+        """Return all values, past and present, of the given key."""
         return self._all[key]
 
     def getindex(self, key, index):
+        """Get the value of the key at a specific index.
+
+        Negative indexing usually makes the most sense here.
+        """
         return self._all[key][index]
 
     def __setitem__(self, key, value):
+        """Update the present value of the key.
+
+        The previous value is preserved in the key's history.
+        """
         try:
             hist = self._all[key]
         except KeyError:
@@ -60,6 +72,10 @@ class Frame:
         hist.append(value)
 
     def replace(self, key, value):
+        """Replace the present value of the key.
+
+        Returns the value that was replaced.
+        """
         try:
             hist = self._all[key]
         except KeyError:
@@ -73,6 +89,12 @@ class Frame:
 
     def popall(self, key):
         return self._all.pop(key)
+
+    def keys(self):
+        return self._all.keys()
+
+    def __iter__(self):
+        return iter(self._all)
 
 
 class Stack:
