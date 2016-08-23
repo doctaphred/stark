@@ -2,6 +2,29 @@
 
 import weakref
 from functools import wraps
+from itertools import filterfalse
+
+
+def unique(iterable, key=None):
+    """Yield unique elements, preserving order.
+
+    >>> ''.join(unique('AAAABBBCCDAABBB'))
+    'ABCD'
+    >>> ''.join(unique('ABBCcAD', key=str.casefold))
+    'ABCD'
+    """
+    seen = set()
+    see = seen.add  # Avoid inner-loop name lookup
+    if key is None:
+        for element in filterfalse(seen.__contains__, iterable):
+            see(element)
+            yield element
+    else:
+        for element in iterable:
+            k = key(element)
+            if k not in seen:
+                see(k)
+                yield element
 
 
 def weak_cached(func):
